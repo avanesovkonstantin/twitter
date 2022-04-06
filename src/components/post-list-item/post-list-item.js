@@ -2,25 +2,69 @@ import React from "react";
 
 import './post-list-item.css';
 
-const PostListItem = ({label}) => {
-    return (
-    <li className="app-list-item d-flex justify-content-between">
-        <span className="app-list-item-label">
-            {label}
-        </span>
-        <div className="d-flex justify-content-center align-items-center">
-           
-            <button className="btn-star btn-sm" type="button">
-                <i className="bi-star"></i>
-            </button>
 
-            <button className="btn-trash btn-sm" type="button">
-                <i className="bi-trash2"></i>
-            </button>
+class PostListItem extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            important: false,
+            like: false
+        };
+    }
 
-            <i className="fa-heart bi-heart-fill"></i>
-        </div>
-    </li>)
+    onClickImportant = () => {
+
+        this.setState(function (prevState, prevProps) {
+            return {
+                important: !prevState.important
+            }
+        });
+
+    }
+
+    onClicklike = () => {
+
+        this.setState(function (prevState, prevProps) {
+            return {
+                like: !prevState.like
+            }
+        });
+
+    }
+
+    render() {
+
+        const { label } = this.props;
+        const { important, like } = this.state;
+        let className = 'app-list-item d-flex justify-content-between';
+        if (important) {
+            className += ' important';
+        }
+
+        if (like) {
+            className += ' like';
+        }
+
+        return (
+            <div className={className}>
+                <span className="app-list-item-label" onClick={this.onClicklike}>
+                    {label}
+                </span>
+                <div className="d-flex justify-content-center align-items-center">
+                    <button
+                        onClick={this.onClickImportant}
+                        className="btn-star btn-sm"
+                        type="button">
+                        <i className="bi-star"></i>
+                    </button>
+                    <button className="btn-trash btn-sm" type="button">
+                        <i className="bi-trash2"></i>
+                    </button>
+                    <i className="fa-heart bi-heart-fill"></i>
+                </div>
+            </div >
+        )
+    }
 }
 
 export default PostListItem;
