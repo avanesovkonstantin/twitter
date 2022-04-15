@@ -7,26 +7,55 @@ import PostAddForm from "../post-add-form/post-add-form";
 
 import './app.css'
 
-const App = () => {
+class App extends React.Component {
 
-    const data = [
-        { label: 'Going to learn React', important: true, id: 1 },
-        { label: 'That is good', important: false, id: 2 },
-        { label: 'I need to break....', important: false, id: 3 }
-    ]
+    constructor(props) {
+        super(props)
+        this.state = {
+            data: [
+                { label: 'Going to learn React', important: true, id: 1 },
+                { label: 'That is good', important: false, id: 2 },
+                { label: 'I need to break....', important: false, id: 3 }
+            ],
+            maxid: 4
+        }
+    }
 
-    return (
+    deleteItem = (id) => {
 
-        <div className="app">
-            <AppHeader></AppHeader>
-            <div className="search-panel d-flex">
-                <SearchPanel></SearchPanel>
-                <PostStatusFilter></PostStatusFilter>
-            </div>
-            <PostList posts={data}></PostList>
-            <PostAddForm></PostAddForm>
-        </div>
-    )
+        this.setState(function ({ data }) {
+            const newData = [];
+            data.forEach(element => {
+                if (element.id !== id) {
+                    newData.push(element)
+                }
+            });
+
+            return {
+                data: newData
+            }
+        })
+    }
+
+    render() {
+        return (
+
+            <div className="app">
+                console.log(deleteItem);
+                <AppHeader></AppHeader>
+                <div className="search-panel d-flex">
+                    <SearchPanel></SearchPanel>
+                    <PostStatusFilter></PostStatusFilter>
+                </div>
+                <PostList
+                    posts={this.state.data}
+                    onDelete={(id)=> this.deleteItem(id)}></PostList>
+                <PostAddForm></PostAddForm>
+            </div >
+        )
+    }
+
+
 }
 
 export default App;
