@@ -1,22 +1,73 @@
 import React from "react";
 import './post-add-form.css';
 
-const PostAddForm = () => {
-    return (
-        <form className="bottom-panel d-flex">
-            <input 
-                type="text"
-                placeholder="о чем вы думаете сейчас?"
-                className="form-control new-post-label"
-            ></input>
+// const PostAddForm = ({onAdd}) => {
 
-            <button
-                type="submit"
-                className="btn btn-outline-secondary"
+//     console.log(onAdd);
+//     return (
+//         <div className="bottom-panel d-flex">
+//             <input 
+//                 type="text"
+//                 placeholder="о чем вы думаете сейчас?"
+//                 className="form-control new-post-label"
+//             ></input>
 
-            >Добавить</button>
-        </form>
-    )
+//             <button
+//                 type="submit"
+//                 className="btn btn-outline-secondary"
+//                 onClick={()=> onAdd('hello')}
+//             >Добавить</button>
+//         </div>
+//     )
+// }
+
+class PostAddForm extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            inputText: ""
+        }
+    }
+
+    onChangeInputText = (e) => {
+        this.setState(function({inputText}){
+            return {
+                inputText: e.target.value
+            }
+        })
+    }
+
+    onPushTheButton =(e) => {
+        e.preventDefault();
+        this.props.onAdd(this.state.inputText);
+        this.setState(function({inputText}){
+            return {
+                inputText: ""
+            }
+        })
+    }
+
+    render() {
+        
+        return (
+            <form 
+            className="bottom-panel d-flex"
+            onSubmit={this.onPushTheButton}>
+                <input
+                    value={this.state.inputText}
+                    type="text"
+                    placeholder="о чем вы думаете сейчас?"
+                    className="form-control new-post-label"
+                    onChange={this.onChangeInputText}
+                ></input>
+
+                <button
+                    type="submit"
+                    className="btn btn-outline-secondary"
+                >Добавить</button>
+            </form>
+        )
+    }
 }
 
 export default PostAddForm;

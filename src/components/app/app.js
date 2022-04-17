@@ -37,11 +37,27 @@ class App extends React.Component {
         })
     }
 
+    addItem = (body) => {
+
+        this.setState(function ({ data, maxid }) {
+
+            const newMaxid = maxid+1; 
+
+            let newData = data.slice();
+            newData.push( { label: body, important: false, id: newMaxid })
+
+            return {
+                data: newData,
+                maxid: newMaxid
+            }
+        }) 
+
+    }
+
     render() {
         return (
 
             <div className="app">
-                console.log(deleteItem);
                 <AppHeader></AppHeader>
                 <div className="search-panel d-flex">
                     <SearchPanel></SearchPanel>
@@ -49,8 +65,11 @@ class App extends React.Component {
                 </div>
                 <PostList
                     posts={this.state.data}
-                    onDelete={(id)=> this.deleteItem(id)}></PostList>
-                <PostAddForm></PostAddForm>
+                    onDelete={(id) => this.deleteItem(id)}>
+                </PostList>
+                <PostAddForm
+                    onAdd={this.addItem}>
+                </PostAddForm>
             </div >
         )
     }
