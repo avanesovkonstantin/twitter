@@ -29,10 +29,12 @@ class App extends React.Component {
         this.state = {
             data: [
                 { label: 'Going to learn React', important: false, like: false, id: 1 },
-                { label: 'That is good', important: false, like: false, id: 2 },
+                { label: 'That is good', important: false, like: true, id: 2 },
                 { label: 'I need to break....', important: false, like: false, id: 3 }
             ],
-            maxid: 4
+            maxid: 4,
+            term: '',
+            filter: 'all'
         }
     }
 
@@ -70,7 +72,6 @@ class App extends React.Component {
     }
 
     setImportant = (id) => {
-        console.log(`onImportant: ${id}`);
         this.setState(function ({ data }) {
             return {
                 data: newDataInvertOption(data, id, 'important')
@@ -80,7 +81,6 @@ class App extends React.Component {
 
 
     setLike = (id) => {
-        console.log(`onLike: ${id}`);
         this.setState(function ({ data }) {
             return {
                 data: newDataInvertOption(data, id, 'like')
@@ -88,11 +88,49 @@ class App extends React.Component {
         })
     }
 
+    searchPost = (items, term) => {
+        if (term.length === 0) {
+            return items
+        }
+
+        return items.filter((item) => {
+            return item.label.indexOf(term) > -1
+        })
+    }
+
+    filterPost = (items, filter) => {
+        if (filter === 'like') {
+            return items.filter(item => item.like)
+        } else {
+            return items
+        }
+    }
+
+    onUpdateSearch = (newTerm) => {
+        this.setState(function ({ term }) {
+            return {
+                term: newTerm
+            }
+        });
+    }
+
+    onFilter = (name) => {
+        this.setState(function ({ filter }) {
+            return {
+                filter: name
+            }
+        });
+    }
+
     render() {
 
-        const liked = this.state.data.filter(function(item) {
-                return item.like;
+        const { data, term, filter } = this.state;
+
+        const liked = data.filter(function (item) {
+            return item.like;
         })
+
+        const visiblePosts = this.filterPost(this.searchPost(data, term), filter);
 
         return (
 
@@ -102,11 +140,19 @@ class App extends React.Component {
                     liked={liked.length}
                 ></AppHeader>
                 <div className="search-panel d-flex">
-                    <SearchPanel></SearchPanel>
-                    <PostStatusFilter></PostStatusFilter>
+                    <SearchPanel
+                        onUpdateSearch={this.onUpdateSearch}
+                    >
+                    </SearchPanel>
+                    <PostStatusFilter
+                        filter={filter}
+                        onFilter={this.onFilter}
+                    >
+
+                    </PostStatusFilter>
                 </div>
                 <PostList
-                    posts={this.state.data}
+                    posts={visiblePosts}
                     onDelete={(id) => this.deleteItem(id)}
                     onImportant={(id) => this.setImportant(id)}
                     onLike={(id) => this.setLike(id)}>
